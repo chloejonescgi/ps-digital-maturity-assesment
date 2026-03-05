@@ -1,0 +1,25 @@
+name: Deploy static site to GitHub Pages
+on:
+  push:
+    branches:
+      - main   # change to your default branch if different
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Upload artifact for GitHub Pages
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: '.'          # or './docs' or './public' — the folder containing built static files
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v1
