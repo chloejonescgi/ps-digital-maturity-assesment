@@ -1,2 +1,2 @@
 # ps-digital-maturity-assesment
-POC
+Proof of concept created for Andy Burston (CGI Ltd)
