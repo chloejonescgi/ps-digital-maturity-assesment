@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>CGI Assurance Diagnostic (V13.7)</title>
+  <title>CGI Assurance Diagnostic (V19.0)</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     :root { 
       --cgi-red: #e31937; --cgi-magenta: #c8105c; --cgi-purple: #6d2077; --cgi-deep: #411e4d;
       --bg-gradient: linear-gradient(135deg, #e31937 0%, #c8105c 50%, #6d2077 100%);
-      --text: #1a1a1a; --risk: #ffab00; --neutral: rgba(0, 0, 0, 0.08);
+      --text: #1a1a1a; --risk: #ffab00; --neutral: rgba(0, 0, 0, 0.08); --success: #2e7d32;
     }
     
     body { 
@@ -76,7 +76,9 @@
 
     .observation-card { background: #fff; padding: 25px; border-radius: 18px; margin-bottom: 25px; border-left: 8px solid var(--cgi-red); opacity: 0; transform: translateY(20px); transition: 0.8s; box-shadow: 0 5px 15px rgba(0,0,0,0.05); text-align: left; }
     .observation-card.reveal { opacity: 1; transform: translateY(0); }
+    .observation-card.adaptive-card { border-left-color: var(--success); background: #f1f8e9; }
     .rec-detail { display: block; margin-top: 10px; font-size: 0.95rem; color: #555; font-style: italic; border-top: 1px solid #eee; padding-top: 10px; }
+    .tier-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; }
 
     .value-prop-box { background: var(--cgi-deep); color: white; padding: 35px; border-radius: 25px; margin: 40px 0; text-align: left; }
     .value-prop-box h3 { color: var(--cgi-red); margin-top: 0; }
@@ -101,7 +103,7 @@
 <div class="glass-card">
   <div id="intro-screen">
     <div class="brand-cgi">CGI</div>
-    <h1>Digital Transformation Readiness</h1>
+    <h1>Transformation Readiness</h1>
     <h2>Self-Service Assurance Diagnostic</h2>
     <p class="cta-text">
       Identify delivery friction and bridge the gap between strategic ambition and delivery reality. 
@@ -135,6 +137,11 @@
     <h2 style="color:var(--cgi-purple); font-size: 2.2rem; font-weight:800; text-align: left;">Your Assurance Profile</h2>
     <div id="radar-container" style="background:white; padding:20px; border-radius:20px; border:1px solid #eee; margin: 30px 0;"><canvas id="radarChart"></canvas></div>
     
+    <div id="celebration-banner" style="display:none; text-align:center; padding: 20px; background:#e8f5e9; border-radius:20px; border:2px solid #2e7d32; margin-bottom:30px;">
+        <h3 style="color:#2e7d32; margin:0;">🌟 Performance Excellence Confirmed</h3>
+        <p style="color:#1b5e20; margin:5px 0 0 0;">You are leading the way for transformation maturity.</p>
+    </div>
+
     <div style="text-align: center; margin-bottom: 30px; display:flex; flex-wrap:wrap; gap:15px; justify-content:center;">
         <button class="btn" onclick="showDimensions()">Explore 4 Dimensions of Maturity</button>
         <button class="btn" style="background: var(--cgi-magenta);" onclick="showPhases()">Explore 4 Playbook Phases</button>
@@ -174,7 +181,7 @@
         </div>
         <p style="margin-top:20px; font-weight:700; color: var(--cgi-red);">Compelling Outcome: By applying both, you bridge the gap between ministerial ambition and delivery reality, ensuring "conditions for success" are met before the first line of code is written.</p>
     </div>
-    <div class="event-footer">Pick up your physical copies of the Blueprint and Playbook from the CGI stand.</div>
+    <div class="event-footer">Pick up your copies of the Blueprint and Playbook from the CGI stand.</div>
     <div style="text-align:center; margin-top:40px;"><button class="btn" style="background:#6c757d;" onclick="window.location.reload()">Restart Diagnostic</button></div>
   </div>
 
@@ -248,13 +255,8 @@
 
   <div id="takeaways-ui" style="display:none;" class="content-padding">
     <h2 style="color:var(--cgi-purple); font-size: 2.2rem; font-weight:800; text-align: left;">Takeaways for You</h2>
-    <p id="takeaway-intro" style="color: #444; font-size: 1.1rem; line-height: 1.5; margin-bottom: 30px;">
-        Based on your assessment, the following <strong>Monday Morning Action Plan</strong> has been generated to support accountability and delivery.
-    </p>
-    
-    <div id="action-plan-grid" class="dim-grid-2x2">
-        </div>
-
+    <p id="takeaway-intro" style="color: #444; font-size: 1.1rem; line-height: 1.5; margin-bottom: 30px;"></p>
+    <div id="action-plan-grid" class="dim-grid-2x2"></div>
     <div class="nav-buttons">
         <button class="btn" style="background:var(--cgi-magenta);" onclick="backToResults()">Back to Results</button>
         <button class="btn" style="background:#6c757d;" onclick="window.location.reload()">Restart Diagnostic</button>
@@ -264,10 +266,65 @@
 </div>
 
 <script>
+// --- 90 SECOND RESET TIMER LOGIC ---
+  let idleTime = 0;
+  const IDLE_LIMIT = 90; // 90 seconds
+
+  // Function to increment the timer and check against limit
+  function timerIncrement() {
+      idleTime++;
+      if (idleTime >= IDLE_LIMIT) { 
+          window.location.reload(); // Resets the diagnostic to the start screen
+      }
+  }
+
+  // Reset timer on any user interaction
+  function resetTimer() {
+      idleTime = 0;
+  }
+
+  // Set up the interval and activity listeners
+  setInterval(timerIncrement, 1000); // Check every second
+  window.onload = function() {
+      document.onmousemove = resetTimer;
+      document.onkeypress = resetTimer;
+      document.onclick = resetTimer;
+      document.ontouchstart = resetTimer; // For tablet/touch devices
+  };
+// ------------------------------------
+
+  // Shared Metadata for professional labels and results logic
+  const domainMeta = {
+    'gov': { 
+        label: 'Strategy & Governance', 
+        Critical: { obs: 'Governance appears performative, reporting status rather than resolving risk.', detail: 'Transition to a "Decision-Node" model immediately. SROs need the mandate to pivot delivery.' },
+        Managed: { obs: 'Governance is stable but reactive to delivery challenges.', detail: 'Align decision rights across all workstreams to prevent mid-cycle friction.' },
+        Adaptive: { obs: 'High Maturity Governance. You have clear, integrated risk-resolution pathways.', detail: 'Leverage this stability to pilot AI-assisted predictive risk modeling and automated reporting.' }
+    },
+    'svc': { 
+        label: 'Service Design', 
+        Critical: { obs: 'High risk of "digitised dysfunction" where tech is layered over broken processes.', detail: 'Prioritise service simplification over technical build. Anchor dependencies now.' },
+        Managed: { obs: 'Services are outcome-led, but interoperability between silos remains a challenge.', detail: 'Focus on cross-functional API standards to improve end-to-end service velocity.' },
+        Adaptive: { obs: 'Service excellence. Your design is centered on user outcomes and simplified flow.', detail: 'You are ready to integrate automated service optimisation and hyper-personalisation.' }
+    },
+    'ppl': { 
+        label: 'People & Culture', 
+        Critical: { obs: 'Delivery relies on heroic individual effort rather than resilient systems.', detail: 'Audit absorption capacity. Identify if the core team is at a structural burnout threshold.' },
+        Managed: { obs: 'Teams are resilient, but collaboration norms are often informal.', detail: 'Systematise knowledge capture to ensure delivery doesn\'t slow during staff transitions.' },
+        Adaptive: { obs: 'High-performing culture. Your teams have the capacity to absorb rapid change.', detail: 'Champion your team rituals as a blueprint for wider HMG digital transformation.' }
+    },
+    'tcd': { 
+        label: 'Technology & Data', 
+        Critical: { obs: 'Legacy estates and unmanaged debt are currently constraining ambition.', detail: 'Establish a "Value-to-Risk" tech roadmap. Decommission legacy constraints immediately.' },
+        Managed: { obs: 'Data is being captured, but not yet treated as a strategic national asset.', detail: 'Implement explicit model governance to prepare for AI and automation readiness.' },
+        Adaptive: { obs: 'Leading-edge technical estate. Data and Tech are core strategic enablers.', detail: 'Deploy advanced AI amplifiers to accelerate public value delivery at scale.' }
+    }
+  };
+
   const domains = [
     { id:'gov', title:'Strategy & Governance', context: 'Assessing how decision rights and risk resolution models support or hinder delivery pace.', qs:['Our governance model resolves risk rather than merely reporting it.','Decision rights are explicit, making it clear who can pause or reset delivery.','Ownership of transformation is documented and understood.'] },
     { id:'svc', title:'Service Design & Flow', context: 'Evaluating the transition from policy intent to user-centric service architecture.', qs:['Services are organised around user outcomes rather than silos.','Dependencies are mapped and controlled before digitisation.','Service flows are simplified to prevent "digitising dysfunction".'] },
-    { id:'ppl', title:'People & Culture', context: 'Reviewing organisational "absorption capacity" and team resilience under change.', qs:['Delivery depends on systems rather than heroic individual effort.','The organisation has the "absorption capacity" for current change.','Collaboration is a structural norm, not an informal practice.'] },
+    { id:'ppl', title:'People & Culture', context: 'Reviewing organisational "absorption capacity" and team resilience under change.', qs:['Delivery depends on systems and teams rather than individual effort.','The organisation has the "absorption capacity" for current change.','Collaboration is a structural norm, not an informal practice.'] },
     { id:'tcd', title:'Technology & Data', context: 'Examining technical debt and the stewardship of data as a strategic national asset.', qs:['Technical debt is managed with a clear modernisation roadmap.','Data is treated as a strategic asset with clear stewardship.','AI deployment is subject to explicit model governance.'] }
   ];
 
@@ -322,75 +379,132 @@
     Object.keys(answers).forEach(k => { scores[k.split('-')[0]] += answers[k]; });
     const sorted = Object.keys(scores).sort((a,b) => scores[a] - scores[b]);
     
-    populateActionPlan(sorted[0]);
+    const getTier = (s) => (s <= 7 ? 'Critical' : s <= 12 ? 'Managed' : 'Adaptive');
+    const pTier = getTier(scores[sorted[0]]);
+    const sTier = getTier(scores[sorted[1]]);
+
+    if(pTier === 'Adaptive') { document.getElementById('celebration-banner').style.display = 'block'; }
+
+    const p = domainMeta[sorted[0]][pTier];
+    const s = domainMeta[sorted[1]][sTier];
+
+    document.getElementById('strategic-insight').innerHTML = `
+        <div id="card-primary" class="observation-card ${pTier==='Adaptive'?'adaptive-card':''}">
+            <span class="tier-badge" style="background:${pTier==='Adaptive'?'var(--success)':(pTier==='Managed'?'var(--cgi-magenta)':'var(--risk)')}; color:#fff;">${pTier} Level</span>
+            <strong>Primary Priority: ${domainMeta[sorted[0]].label}</strong><br>${p.obs}
+            <span class="rec-detail">${p.detail}</span>
+        </div>
+        <div id="card-secondary" class="observation-card ${sTier==='Adaptive'?'adaptive-card':''}">
+            <span class="tier-badge" style="background:${sTier==='Adaptive'?'var(--success)':(sTier==='Managed'?'var(--cgi-magenta)':'var(--risk)')}; color:#fff;">${sTier} Level</span>
+            <strong>Secondary Exposure: ${domainMeta[sorted[1]].label}</strong><br>${s.obs}
+            <span class="rec-detail">${s.detail}</span>
+        </div>`;
+
+    populateActionPlan(sorted[0], pTier);
 
     const ctx = document.getElementById('radarChart').getContext('2d');
     if(radarChart) radarChart.destroy();
     radarChart = new Chart(ctx, { type: 'radar', data: { labels: ['Governance', 'Service', 'People', 'Tech'], datasets: [{ data: [scores.gov, scores.svc, scores.ppl, scores.tcd], backgroundColor: 'rgba(200, 16, 92, 0.2)', borderColor: '#c8105c', borderWidth: 3 }] }, options: { scales: { r: { min: 0, max: 15, ticks: { display: false } } }, plugins: { legend: { display: false } } } });
-    const domainMeta = {
-      'gov': { label: 'Strategy & Governance', obs: 'Governance appears performative, likely reporting status rather than resolving risk.', detail: 'Transition to a "Decision-Node" model to ensure that risk owners have the mandate to stop or pivot delivery.' },
-      'svc': { label: 'Service Design', obs: 'Potential digitised dysfunction detected where tech is layered over broken processes.', detail: 'Prioritize service simplified mapping over automation. Anchor dependencies before further digitisation.' },
-      'ppl': { label: 'People & Culture', obs: 'Current delivery relies on heroic individual effort rather than resilient systems.', detail: 'Focus on "Absorption Capacity"—identify if the team is at a burnout threshold.' },
-      'tcd': { label: 'Technology & Data', obs: 'Legacy estates and unmanaged technical debt are currently constraining ambition.', detail: 'Establish a "Value-to-Risk" tech roadmap. Shift data from a byproduct to a strategic asset.' }
-    };
-    document.getElementById('strategic-insight').innerHTML = '<div id="card-primary" class="observation-card"><strong>Primary Priority: ' + domainMeta[sorted[0]].label + '</strong><br>' + domainMeta[sorted[0]].obs + '<span class="rec-detail">' + domainMeta[sorted[0]].detail + '</span></div><div id="card-secondary" class="observation-card"><strong>Secondary Exposure: ' + domainMeta[sorted[1]].label + '</strong><br>' + domainMeta[sorted[1]].obs + '<span class="rec-detail">' + domainMeta[sorted[1]].detail + '</span></div>';
+
     setTimeout(() => document.getElementById('card-primary').classList.add('reveal'), 400);
     setTimeout(() => document.getElementById('card-secondary').classList.add('reveal'), 1200);
+    
+    // We pass the score of the LOWEST (Primary Priority) domain to move the marker
     moveMarker(scores[sorted[0]]);
     window.scrollTo(0,0);
   }
 
-  function populateActionPlan(lowDim) {
-      const plans = {
-          'gov': [
-              { h: "Accountability Reset", d: "Document exact decision rights for SROs vs. delivery leads to remove 'momentum-challenging' ambiguity." },
-              { h: "Governance Streamlining", d: "Audit the board schedule. Identify which boards exist to resolve risks and which merely consume status reports." },
-              { h: "Risk Ownership Audit", d: "Verify that all top-tier delivery risks are held by a named individual with the budget to mitigate them." },
-              { h: "Monday Action", d: "Meet with the SRO to define the single 'Red Line' that would trigger an immediate programme reset." }
-          ],
-          'svc': [
-              { h: "Dependency Mapping", d: "Identify siloed service components that lack a shared architectural vision or clear interoperability standards." },
-              { h: "Process Flow Verification", d: "Select a core service path and verify if it has been simplified before technical build-out commenced." },
-              { h: "User Outcome Audit", d: "Review the backlog to ensure features are tied to documented user needs rather than legacy process requirements." },
-              { h: "Monday Action", d: "Walk through the live service 'as-is' with the product owner to find the biggest gap between intent and user reality." }
-          ],
-          'ppl': [
-              { h: "Resilience Assessment", d: "Evaluate if milestones are met via repeatable systems or if 'heroic effort' is the current delivery engine." },
-              { h: "Absorption Capacity Check", d: "Determine if teams are structurally able to absorb the next phase of change without a drop in quality." },
-              { h: "Collaboration Norms Audit", d: "Identify where informal networks are doing the work that formal structures should be managing." },
-              { h: "Monday Action", d: "Host a 'no-blame' retro to identify the top three administrative burdens preventing teams from focusing on delivery." }
-          ],
-          'tcd': [
-              { h: "Technical Debt Valuation", d: "Assign a risk-value to legacy constraints. Quantify how much debt is slowing down current feature velocity." },
-              { h: "Data Stewardship Review", d: "Verify if data ownership is clear enough to support automation or AI-driven decision making." },
-              { h: "Legacy Modernisation Roadmap", d: "Align the tech roadmap with business value to ensure technical upgrades aren't seen as purely 'IT costs'." },
-              { h: "Monday Action", d: "Review the Technical Debt register and identify one legacy constraint to decommission in the current sprint." }
-          ]
-      };
-      
-      const grid = document.getElementById('action-plan-grid');
-      grid.innerHTML = "";
-      plans[lowDim].forEach(item => {
-          grid.innerHTML += `<div class="dim-tile" style="border-left-color: var(--cgi-red);"><h4>${item.h}</h4><div class="dim-section">${item.d}</div></div>`;
-      });
-  }
-
-  function moveMarker(lowScore) {
+  function moveMarker(score) {
     const marker = document.getElementById('matrix-marker');
     marker.style.display = 'block';
-    setTimeout(() => { marker.style.left = Math.min(90, 100 - (lowScore * 6)) + '%'; marker.style.top = Math.max(10, (lowScore * 6)) + '%'; }, 100);
+    
+    // SCALE FIX:
+    // Min Score = 3, Max Score = 15 (based on 3 questions per domain x 5)
+    // Constraint: score should be capped at 15 to avoid grid-overflow
+    const cleanScore = Math.min(Math.max(score, 3), 15);
+
+    // Calculate intensity 10% (Low) to 90% (High)
+    const intensity = ((cleanScore - 3) / 12) * 80 + 10; 
+    
+    // For the Heat-map:
+    // HIGH MATURITY (15) -> LOW Exposure (Bottom Left)
+    // LOW MATURITY (3) -> HIGH Exposure (Top Right)
+    
+    // X-axis (Risk): High intensity (score 15) -> 10% (Left)
+    marker.style.left = (100 - intensity) + '%';
+    // Y-axis (Impact): High intensity (score 15) -> 90% (Bottom)
+    marker.style.top = intensity + '%';
   }
 
-  function showDimensions() { hideAllViews(); document.getElementById('dimensions-ui').style.display = 'block'; window.scrollTo(0,0); }
-  function showPhases() { hideAllViews(); document.getElementById('phases-ui').style.display = 'block'; window.scrollTo(0,0); }
-  function showTakeaways() { hideAllViews(); document.getElementById('takeaways-ui').style.display = 'block'; window.scrollTo(0,0); }
-  function backToResults() { hideAllViews(); document.getElementById('results-ui').style.display = 'block'; window.scrollTo(0,0); }
-  function hideAllViews() { 
-      document.getElementById('results-ui').style.display = 'none'; 
-      document.getElementById('dimensions-ui').style.display = 'none'; 
-      document.getElementById('phases-ui').style.display = 'none'; 
-      document.getElementById('takeaways-ui').style.display = 'none';
+  function populateActionPlan(lowDim, tier) {
+      const plans = {
+          'gov': {
+              Critical: [ {h:"Accountability Reset", d:"Map SRO rights vs delivery leads to remove ambiguity."}, {h:"Risk Audit", d:"Verify that all top risks are held by individuals with budget mandate."}, {h:"Monday Action", d:"Define the single 'Red Line' that would trigger an immediate programme reset."} ],
+              Managed: [ {h:"Decision Rights", d:"Standardise the 'Escalation Ladder' across all workstreams."}, {h:"Governance Audit", d:"Review meeting cadence to ensure it supports rapid risk resolution."}, {h:"Monday Action", d:"Review the 'Risk Register' and see if three items can be easily 'Resolved'."} ],
+              Adaptive: [ {h:"Predictive Governance", d:"Trial automated risk reporting using stable governance data."}, {h:"Benchmark", d:"Record decision-cycle times to create a high-performance baseline."}, {h:"Monday Action", d:"Invite a peer department to review your 'Decision-Node' model as a case study."} ]
+          },
+          'svc': {
+              Critical: [ {h:"Flow Verification", d:"Walk through a core service path and verify it is simplified before build."}, {h:"Dependency Mapping", d:"Map siloed service components that lack a shared architectural vision."}, {h:"Monday Action", d:"Find the biggest gap between policy intent and live user reality."} ],
+              Managed: [ {h:"Interoperability", d:"Enforce API-first standards to bridge service silos."}, {h:"User Flow Audit", d:"Review friction points in the primary user journey."}, {h:"Monday Action", d:"Map one 'Off-System' workaround and plan its elimination."} ],
+              Adaptive: [ {h:"Zero-Touch Flow", d:"Evaluate service paths for AI-driven zero-touch processing feasibility."}, {h:"Value Realisation", d:"Quantify the public value generated by your simplified service flow."}, {h:"Monday Action", d:"Select one high-volume service flow for an AI-amplifier pilot study."} ]
+          },
+          'ppl': {
+              Critical: [ {h:"Absorption Check", d:"Identify if milestones are met via repeatable systems or purely 'heroic effort'."}, {h:"Capacity Audit", d:"Determine if teams can absorb the next phase of change safely."}, {h:"Monday Action", d:"Host a 'no-blame' retro to identify the top 3 friction points."} ],
+              Managed: [ {h:"Knowledge Management", d:"Systematise the capture of 'In-Flight' delivery knowledge."}, {h:"Team Resilience", d:"Audit team burnout levels and adjust delivery cadence if required."}, {h:"Monday Action", d:"Define 'Success Behaviours' for the current delivery phase."} ],
+              Adaptive: [ {h:"Culture as Code", d:"Document your team rituals and norms as a standard for other programmes."}, {h:"Mentorship", d:"Establish a cross-departmental peer mentoring programme for future leaders."}, {h:"Monday Action", d:"Champion a team member for a 'Public Value' delivery award."} ]
+          },
+          'tcd': {
+              Critical: [ {h:"Debt Liquidation", d:"Identify the single piece of legacy tech that most constraints your strategy."}, {h:"Technical Audit", d:"Review the modernization roadmap for alignment with current ambitions."}, {h:"Monday Action", d:"Stop one technical workstream that is serving a legacy, non-target state."} ],
+              Managed: [ {h:"Data Stewardship", d:"Establish explicit ownership for core data assets."}, {h:"Modernisation", d:"Accelerate the migration of one high-risk legacy component to cloud."}, {h:"Monday Action", d:"Review the 'Data Dictionary' for AI-readiness markers."} ],
+              Adaptive: [ {h:"AI Scaling", d:"Apply LLM-based code-refactoring to further reduce technical debt."}, {h:"Strategic Asset", d:"Package internal data products for cross-government reuse and value."}, {h:"Monday Action", d:"Run a 'Future-State' session on how AI could disrupt your current tech stack."} ]
+          }
+      };
+
+      const plan = plans[lowDim][tier];
+      const grid = document.getElementById('action-plan-grid');
+      const intro = document.getElementById('takeaway-intro');
+      
+      intro.innerText = `Your profile suggests focus on ${domainMeta[lowDim].label}. This is not just about technology; it's about the conditions for success. Based on your ${tier} level, here is your high-impact action plan:`;
+      
+      grid.innerHTML = plan.map(p => `
+          <div class="dim-tile">
+              <h4>${p.h}</h4>
+              <p style="font-size:0.9rem; color:#444;">${p.d}</p>
+          </div>
+      `).join('') + `
+          <div class="dim-tile" style="background:var(--cgi-red); color:white; border:none;">
+              <h4 style="color:white; border-bottom:1px solid rgba(255,255,255,0.3);">Public Value Metric</h4>
+              <p style="font-size:0.9rem;">Executing these steps ensures that transformation remains a <strong>defensible investment</strong> rather than a delivery risk.</p>
+          </div>
+      `;
+  }
+
+  function showDimensions() {
+    document.getElementById('results-ui').style.display = 'none';
+    document.getElementById('dimensions-ui').style.display = 'block';
+    window.scrollTo(0,0);
+  }
+
+  function showPhases() {
+    document.getElementById('results-ui').style.display = 'none';
+    document.getElementById('phases-ui').style.display = 'block';
+    window.scrollTo(0,0);
+  }
+
+  function showTakeaways() {
+    document.getElementById('results-ui').style.display = 'none';
+    document.getElementById('takeaways-ui').style.display = 'block';
+    window.scrollTo(0,0);
+  }
+
+  function backToResults() {
+    document.getElementById('dimensions-ui').style.display = 'none';
+    document.getElementById('phases-ui').style.display = 'none';
+    document.getElementById('takeaways-ui').style.display = 'none';
+    document.getElementById('results-ui').style.display = 'block';
+    window.scrollTo(0,0);
   }
 </script>
+
 </body>
 </html>
