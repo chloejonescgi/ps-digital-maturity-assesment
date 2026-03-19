@@ -165,7 +165,7 @@
     </div>
     <div id="strategic-insight"></div>
     <div class="value-prop-box">
-        <h3>Strategic Takeaway: Blueprint & Playbook</h3>
+        <h3 style="color: #ffffff;">Strategic Takeaway: Blueprint & Playbook</h3>
         <p>Your results indicate specific friction points in your delivery model. To address these, we have developed two foundational assets available today:</p>
         <div class="doc-grid">
             <div class="doc-item">
@@ -179,7 +179,7 @@
                 <p><strong>Outcome:</strong> Repeatable standards and evidence-based phase transitions to ensure GDS/IPA compliance without losing pace.</p>
             </div>
         </div>
-        <p style="margin-top:20px; font-weight:700; color: var(--cgi-red);">Compelling Outcome: By applying both, you bridge the gap between ministerial ambition and delivery reality, ensuring "conditions for success" are met before the first line of code is written.</p>
+        <p style="margin-top:20px; font-weight:700; color: #ffffff;">Compelling Outcome: By applying both, you bridge the gap between ministerial ambition and delivery reality, ensuring "conditions for success" are met before the first line of code is written.</p>
     </div>
     <div class="event-footer">Pick up your copies of the Blueprint and Playbook from the CGI stand.</div>
     <div style="text-align:center; margin-top:40px;"><button class="btn" style="background:#6c757d;" onclick="window.location.reload()">Restart Diagnostic</button></div>
@@ -388,14 +388,14 @@
     const p = domainMeta[sorted[0]][pTier];
     const s = domainMeta[sorted[1]][sTier];
 
-    document.getElementById('strategic-insight').innerHTML = `
+document.getElementById('strategic-insight').innerHTML = `
         <div id="card-primary" class="observation-card ${pTier==='Adaptive'?'adaptive-card':''}">
-            <span class="tier-badge" style="background:${pTier==='Adaptive'?'var(--success)':(pTier==='Managed'?'var(--cgi-magenta)':'var(--risk)')}; color:#fff;">${pTier} Level</span>
+            <span class="tier-badge" style="background:${pTier==='Adaptive'?'var(--success)':(pTier==='Critical'?'var(--cgi-red)':'var(--risk)')}; color:#fff;">${pTier} Level</span>
             <strong>Primary Priority: ${domainMeta[sorted[0]].label}</strong><br>${p.obs}
             <span class="rec-detail">${p.detail}</span>
         </div>
         <div id="card-secondary" class="observation-card ${sTier==='Adaptive'?'adaptive-card':''}">
-            <span class="tier-badge" style="background:${sTier==='Adaptive'?'var(--success)':(sTier==='Managed'?'var(--cgi-magenta)':'var(--risk)')}; color:#fff;">${sTier} Level</span>
+            <span class="tier-badge" style="background:${sTier==='Adaptive'?'var(--success)':(sTier==='Critical'?'var(--cgi-red)':'var(--risk)')}; color:#fff;">${sTier} Level</span>
             <strong>Secondary Exposure: ${domainMeta[sorted[1]].label}</strong><br>${s.obs}
             <span class="rec-detail">${s.detail}</span>
         </div>`;
@@ -439,24 +439,24 @@
   function populateActionPlan(lowDim, tier) {
       const plans = {
           'gov': {
-              Critical: [ {h:"Accountability Reset", d:"Map SRO rights vs delivery leads to remove ambiguity."}, {h:"Risk Audit", d:"Verify that all top risks are held by individuals with budget mandate."}, {h:"Monday Action", d:"Define the single 'Red Line' that would trigger an immediate programme reset."} ],
-              Managed: [ {h:"Decision Rights", d:"Standardise the 'Escalation Ladder' across all workstreams."}, {h:"Governance Audit", d:"Review meeting cadence to ensure it supports rapid risk resolution."}, {h:"Monday Action", d:"Review the 'Risk Register' and see if three items can be easily 'Resolved'."} ],
-              Adaptive: [ {h:"Predictive Governance", d:"Trial automated risk reporting using stable governance data."}, {h:"Benchmark", d:"Record decision-cycle times to create a high-performance baseline."}, {h:"Monday Action", d:"Invite a peer department to review your 'Decision-Node' model as a case study."} ]
+              Critical: [ {h:"Accountability Reset", d:"You may have high risk. Map SRO rights vs delivery leads to remove ambiguity. Strong leadership is vital to your success."}, {h:"Risk Audit", d:"Verify that all top risks are held by individuals with the budget and mandate to act on them. This is a fixable problem."}, {h:"Monday Action", d:"Define the single 'Red Line' that would trigger an immediate programme reset. Set expectations as to when, and why, delivery and stops."} ],
+              Managed: [ {h:"Decision Rights", d:"You are on the right lines. Review accuracy and understanding of the risk 'Escalation Ladder' across all workstreams."}, {h:"Governance Audit", d:"Keep it proportionate. Review meeting cadence and TORs to ensure it supports rapid risk resolution."}, {h:"Monday Action", d:"Review the 'Risk Register' with those involved in delivery. See if 3 items can be easily 'Resolved' with minimal effort and a little time."} ],
+              Adaptive: [ {h:"Predictive Governance", d:"You are really strong. Trial automated risk reporting using stable governance data."}, {h:"Benchmark", d:"Record decision-cycle times to create a high-performance baseline."}, {h:"Monday Action", d:"Invite a peer department to review your 'Decision-Node' model as a case study."} ]
           },
           'svc': {
-              Critical: [ {h:"Flow Verification", d:"Walk through a core service path and verify it is simplified before build."}, {h:"Dependency Mapping", d:"Map siloed service components that lack a shared architectural vision."}, {h:"Monday Action", d:"Find the biggest gap between policy intent and live user reality."} ],
-              Managed: [ {h:"Interoperability", d:"Enforce API-first standards to bridge service silos."}, {h:"User Flow Audit", d:"Review friction points in the primary user journey."}, {h:"Monday Action", d:"Map one 'Off-System' workaround and plan its elimination."} ],
-              Adaptive: [ {h:"Zero-Touch Flow", d:"Evaluate service paths for AI-driven zero-touch processing feasibility."}, {h:"Value Realisation", d:"Quantify the public value generated by your simplified service flow."}, {h:"Monday Action", d:"Select one high-volume service flow for an AI-amplifier pilot study."} ]
+              Critical: [ {h:"Flow Verification", d:"There could be confusion in service mapping. Walk through a core service path and verify it is simplified before build."}, {h:"Dependency Mapping", d:"Map siloed service components that lack a shared architectural vision. Are they a hangover from legacy/inherited approaches?"}, {h:"Monday Action", d:"Find the biggest gap between policy intent and live User eXperience (UX) and reality. Consult the users if you can."} ],
+              Managed: [ {h:"Interoperability", d:"You are likely doing well in service management. Consider enforcing API-first standards to bridge service silos."}, {h:"User Flow Audit", d:"to support user-centricity, schedule the review friction points in the primary user journey."}, {h:"Monday Action", d:"Map one 'Off-System' workaround and plan its elimination with your service management team. Set the ambition to eliminate inefficiency."} ],
+              Adaptive: [ {h:"Zero-Touch Flow", d:"You are doing very well. Evaluate service paths for AI-driven zero-touch processing feasibility."}, {h:"Value Realisation", d:"You are advanced in your position. Consider quantifying the public value generated by your simplified service flow."}, {h:"Monday Action", d:"Keep at it, your approach is sound. Select one high-volume service flow for an AI-amplifier pilot study."} ]
           },
           'ppl': {
-              Critical: [ {h:"Absorption Check", d:"Identify if milestones are met via repeatable systems or purely 'heroic effort'."}, {h:"Capacity Audit", d:"Determine if teams can absorb the next phase of change safely."}, {h:"Monday Action", d:"Host a 'no-blame' retro to identify the top 3 friction points."} ],
-              Managed: [ {h:"Knowledge Management", d:"Systematise the capture of 'In-Flight' delivery knowledge."}, {h:"Team Resilience", d:"Audit team burnout levels and adjust delivery cadence if required."}, {h:"Monday Action", d:"Define 'Success Behaviours' for the current delivery phase."} ],
-              Adaptive: [ {h:"Culture as Code", d:"Document your team rituals and norms as a standard for other programmes."}, {h:"Mentorship", d:"Establish a cross-departmental peer mentoring programme for future leaders."}, {h:"Monday Action", d:"Champion a team member for a 'Public Value' delivery award."} ]
+              Critical: [ {h:"Absorption Check", d:"Your teams might be running hot. Identify if milestones are met via repeatable systems or purely 'heroic effort'."}, {h:"Capacity Audit", d:"Take care of your delivery teams. Determine if delivery teams and users can absorb the next phase of change safely."}, {h:"Monday Action", d:"Host a 'no-blame' retrospective to identify the top 3 friction points and delivery risks."} ],
+              Managed: [ {h:"Knowledge Management", d:"Systematise the capture of 'In-Flight' delivery knowledge."}, {h:"Team Resilience", d:"Audit team burnout levels and adjust delivery cadence if required. Can they sustain delivery pace?"}, {h:"Monday Action", d:"Define 'Success Behaviours' for the current delivery phase. Celebrate an example of good delivery."} ],
+              Adaptive: [ {h:"Culture as Code", d:"You are great. Consider documenting your team rituals and norms as a standard for other programmes."}, {h:"Mentorship", d:"Establish a cross-departmental peer mentoring programme for future leaders."}, {h:"Monday Action", d:"Champion a team member for a 'Public Value' delivery award adn ask them to share their approach."} ]
           },
           'tcd': {
-              Critical: [ {h:"Debt Liquidation", d:"Identify the single piece of legacy tech that most constraints your strategy."}, {h:"Technical Audit", d:"Review the modernization roadmap for alignment with current ambitions."}, {h:"Monday Action", d:"Stop one technical workstream that is serving a legacy, non-target state."} ],
-              Managed: [ {h:"Data Stewardship", d:"Establish explicit ownership for core data assets."}, {h:"Modernisation", d:"Accelerate the migration of one high-risk legacy component to cloud."}, {h:"Monday Action", d:"Review the 'Data Dictionary' for AI-readiness markers."} ],
-              Adaptive: [ {h:"AI Scaling", d:"Apply LLM-based code-refactoring to further reduce technical debt."}, {h:"Strategic Asset", d:"Package internal data products for cross-government reuse and value."}, {h:"Monday Action", d:"Run a 'Future-State' session on how AI could disrupt your current tech stack."} ]
+              Critical: [ {h:"Debt Liquidation", d:"Obsolescence could be a challenge here. You are not alone. Identify the single piece of legacy tech that most constraints your strategy."}, {h:"Technical Audit", d:"Does the plan hold true? Review the modernisation roadmap for clear alignment with current ambitions."}, {h:"Monday Action", d:"Review and consider stopping one technical workstream that is serving a legacy, non-target state."} ],
+              Managed: [ {h:"Data Stewardship", d:"Business operations are nothing without accurate data. Establish explicit ownership for core data assets."}, {h:"Modernisation", d:"Accelerate the upgrade and migration of one high-risk legacy component to cloud."}, {h:"Monday Action", d:"This will indicate transformation progress. Review the 'Data Dictionary' for AI-readiness markers."} ],
+              Adaptive: [ {h:"AI Scaling", d:"You are performing well. Apply LLM-based code-refactoring to further reduce technical debt."}, {h:"Strategic Asset", d:"You are leading. Package internal data products for cross-government reuse and value."}, {h:"Monday Action", d:"Run a 'Future-State' session with your digital and delivery teams on how AI could disrupt your current tech stack."} ]
           }
       };
 
